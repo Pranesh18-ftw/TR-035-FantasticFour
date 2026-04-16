@@ -6,15 +6,8 @@ const AIDrugSuggestions = ({ query, onSelect, onAddNew }) => {
   const [loading, setLoading] = useState(false);
   const [showAll, setShowAll] = useState(false);
 
-  useEffect(() => {
-    if (query.length >= 2) {
-      fetchSuggestions();
-    } else {
-      fetchDefaultSuggestions();
-    }
-  }, [query, fetchSuggestions, fetchDefaultSuggestions]);
-
   const fetchSuggestions = useCallback(async () => {
+    if (!query || query.length < 2) return;
     setLoading(true);
     try {
       const response = await fetch(
@@ -32,14 +25,30 @@ const AIDrugSuggestions = ({ query, onSelect, onAddNew }) => {
 
   const fetchDefaultSuggestions = useCallback(async () => {
     try {
-      const response = await fetch('http://localhost:8002/api/inventory/drug-suggestions');
+      const response = await fetch('http://localhost:8002/api/inventory/common-drugs');
       const data = await response.json();
-      setSuggestions(data.suggestions || []);
+      // Convert common drugs to suggestion format
+      const defaultSuggestions = (data.drugs || []).map(drug => ({
+        name: drug.name,
+        category: drug.category,
+        temp_min: drug.temp_min,
+        temp_max: drug.temp_max,
+        confidence: 1.0
+      }));
+      setSuggestions(defaultSuggestions);
     } catch (error) {
       console.error('Error fetching default suggestions:', error);
       setSuggestions([]);
     }
   }, []);
+
+  useEffect(() => {
+    if (query && query.length >= 2) {
+      fetchSuggestions();
+    } else {
+      fetchDefaultSuggestions();
+    }
+  }, [query, fetchSuggestions, fetchDefaultSuggestions]);
 
   const getCategoryColor = (category) => {
     const colors = {
