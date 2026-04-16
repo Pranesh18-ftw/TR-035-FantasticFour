@@ -164,69 +164,6 @@ def delete_inventory_item(item_id: int):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
-# ==================== INVENTORY CRUD ENDPOINTS ====================
-
-@app.get("/api/inventory")
-def get_inventory():
-    """Get all inventory items"""
-    return {"inventory": inventory_items}
-
-@app.post("/api/inventory")
-def add_inventory_item(item: InventoryItem):
-    """Add a new inventory item"""
-    try:
-        new_item = {
-            "id": len(inventory_items) + 1,
-            "drug_name": item.drug_name,
-            "batch_number": item.batch_number,
-            "quantity": item.quantity,
-            "storage_unit": item.storage_unit,
-            "facility_id": item.facility_id,
-            "optimal_temp_min": item.optimal_temp_min,
-            "optimal_temp_max": item.optimal_temp_max,
-            "expiry_date": item.expiry_date,
-            "status": "active",
-            "viability": 100.0,
-            "added_at": datetime.now().isoformat()
-        }
-        inventory_items.append(new_item)
-        return {"success": True, "item": new_item}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-@app.put("/api/inventory/{item_id}")
-def update_inventory_item(item_id: int, item: InventoryItem):
-    """Update an existing inventory item"""
-    try:
-        for i, existing in enumerate(inventory_items):
-            if existing["id"] == item_id:
-                inventory_items[i].update({
-                    "drug_name": item.drug_name,
-                    "batch_number": item.batch_number,
-                    "quantity": item.quantity,
-                    "storage_unit": item.storage_unit,
-                    "facility_id": item.facility_id,
-                    "optimal_temp_min": item.optimal_temp_min,
-                    "optimal_temp_max": item.optimal_temp_max,
-                    "expiry_date": item.expiry_date
-                })
-                return {"success": True, "item": inventory_items[i]}
-        return {"success": False, "error": "Item not found"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-@app.delete("/api/inventory/{item_id}")
-def delete_inventory_item(item_id: int):
-    """Delete an inventory item"""
-    try:
-        for i, item in enumerate(inventory_items):
-            if item["id"] == item_id:
-                deleted = inventory_items.pop(i)
-                return {"success": True, "deleted": deleted}
-        return {"success": False, "error": "Item not found"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
 # ==================== SENSOR ENDPOINTS ====================
 
 @app.get("/api/sensors/current")
