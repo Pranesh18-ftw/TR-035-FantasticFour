@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea, ReferenceLine } from 'recharts';
 import IntelligentBreachPopup from './IntelligentBreachPopup';
 
@@ -6,24 +6,19 @@ const Dashboard = ({ sensorData, breaches }) => {
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [showBreachPopup, setShowBreachPopup] = useState(false);
   const [selectedBreach, setSelectedBreach] = useState(null);
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  // Update clock every second
-  useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Get critical breaches for alerts
-  const criticalBreaches = breaches.filter(b => b.severity === 'critical');
-  const hasActiveBreach = breaches.some(b => b.status === 'active');
-
+  
+  // Debug logging
+  console.log('Dashboard received sensorData:', sensorData?.length, 'items');
+  console.log('Dashboard received breaches:', breaches?.length, 'items');
+  
   // Prepare chart data - show last 20 readings
-  const chartData = sensorData.slice(-20).map(reading => ({
-    time: new Date(reading.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-    temperature: reading.temperature,
-    sensor: reading.sensor_id
-  }));
+  const chartData = sensorData?.slice(-20).map(reading => ({
+    time: reading.timestamp ? new Date(reading.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--',
+    temperature: reading.temperature || 0,
+    sensor: reading.sensor_id || 'Unknown'
+  })) || [];
+
+  console.log('chartData prepared:', chartData.length, 'points');
 
   // Calculate system health percentage
   const totalSensors = sensorData.length;
@@ -38,21 +33,20 @@ const Dashboard = ({ sensorData, breaches }) => {
   }).length;
 
   const criticalCount = breaches.filter(b => b.severity === 'critical').length;
-  const highCount = breaches.filter(b => b.severity === 'high').length;
 
   // Get unique sensors
   const sensors = [...new Set(sensorData.map(r => r.sensor_id))];
 
   // Handle breach popup
-  const handleBreachClick = (breach) => {
+  const handleBreachClick = useCallback((breach) => {
     setSelectedBreach(breach);
     setShowBreachPopup(true);
-  };
+  }, []);
 
-  const handleCloseBreachPopup = () => {
+  const handleCloseBreachPopup = useCallback(() => {
     setShowBreachPopup(false);
     setSelectedBreach(null);
-  };
+  }, []);
 
   // Auto-show popup for critical breaches
   useEffect(() => {
@@ -63,11 +57,14 @@ const Dashboard = ({ sensorData, breaches }) => {
     );
     
     if (newCriticalBreach) {
-      handleBreachClick(newCriticalBreach);
+      // Use setTimeout to avoid calling setState synchronously
+      setTimeout(() => {
+        handleBreachClick(newCriticalBreach);
+      }, 0);
       // Mark as notified
       newCriticalBreach.notified = true;
     }
-  }, [breaches]);
+  }, [breaches, handleBreachClick]);
 
   return (
     <div className="dashboard-container">

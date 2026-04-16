@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './AIDrugSuggestions.css';
 
 const AIDrugSuggestions = ({ query, onSelect, onAddNew }) => {
@@ -12,9 +12,9 @@ const AIDrugSuggestions = ({ query, onSelect, onAddNew }) => {
     } else {
       fetchDefaultSuggestions();
     }
-  }, [query]);
+  }, [query, fetchSuggestions, fetchDefaultSuggestions]);
 
-  const fetchSuggestions = async () => {
+  const fetchSuggestions = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -28,9 +28,9 @@ const AIDrugSuggestions = ({ query, onSelect, onAddNew }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [query]);
 
-  const fetchDefaultSuggestions = async () => {
+  const fetchDefaultSuggestions = useCallback(async () => {
     try {
       const response = await fetch('http://localhost:8002/api/inventory/drug-suggestions');
       const data = await response.json();
@@ -39,7 +39,7 @@ const AIDrugSuggestions = ({ query, onSelect, onAddNew }) => {
       console.error('Error fetching default suggestions:', error);
       setSuggestions([]);
     }
-  };
+  }, []);
 
   const getCategoryColor = (category) => {
     const colors = {

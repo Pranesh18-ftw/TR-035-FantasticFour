@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -13,18 +13,18 @@ const Reports = () => {
   useEffect(() => {
     fetchReport();
     fetchMetrics();
-  }, [days]);
+  }, [days, fetchReport, fetchMetrics]);
 
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/api/compliance/report?days=${days}`);
       setReport(response.data.report);
     } catch (error) {
       console.error('Error fetching report:', error);
     }
-  };
+  }, [days]);
 
-  const fetchMetrics = async () => {
+  const fetchMetrics = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/api/metrics`);
       setMetrics(response.data.metrics);
@@ -33,7 +33,7 @@ const Reports = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const downloadCSV = () => {
     const headers = ['Metric', 'Value'];

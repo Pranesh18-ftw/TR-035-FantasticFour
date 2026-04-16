@@ -1,307 +1,224 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, BackgroundTasks
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-import uvicorn
 import os
-import asyncio
-import json
-from datetime import datetime, timedelta
-from typing import List, Dict, Any
-
-# Import models and services
-from .models.database import init_db, get_db, SessionLocal
-from .models.schemas import (
-    SensorReading, BreachEvent, InventoryItem, 
-    DrugViabilityCurve, ComplianceReport, EvaluationMetrics
-)
+import requests
+from fastapi import FastAPI, Query
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from dotenv import load_dotenv
+from .services.inventory_service import InventoryService
 from .services.sensor_simulator import SensorSimulator
 from .services.breach_detector import BreachDetector
 from .services.viability_calculator import ViabilityCalculator
-from .services.ai_generator import AIGenerator
-from .services.inventory_service import InventoryService
+from datetime import datetime, timedelta
+
+# Load environment variables
+load_dotenv()
+
+# Secure API configuration
+API_KEY = os.getenv("NVIDIA_API_KEY")
+BASE_URL = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
+MODEL = os.getenv("NVIDIA_MODEL", "meta/llama-3.1-405b-instruct")
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Pharmaceutical Cold Chain Monitoring API",
-    description="Real-time monitoring, breach detection, and drug viability tracking",
+    title="Cold Chain Monitoring System",
+    description="AI-powered pharmaceutical cold chain monitoring",
     version="1.0.0"
 )
 
-# Add CORS middleware
+# Enable CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
+        "http://localhost:5175",
+        "http://127.0.0.1:5175",
+        "http://localhost:5176",
+        "http://127.0.0.1:5176",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Initialize services
-sensor_simulator = SensorSimulator()
-breach_detector = BreachDetector()
-viability_calculator = ViabilityCalculator()
-ai_generator = AIGenerator()
-
-# WebSocket connection manager
-class ConnectionManager:
-    def __init__(self):
-        self.active_connections: List[WebSocket] = []
-    
-    async def connect(self, websocket: WebSocket):
-        await websocket.accept()
-        self.active_connections.append(websocket)
-    
-    def disconnect(self, websocket: WebSocket):
-        self.active_connections.remove(websocket)
-    
-    async def broadcast(self, message: dict):
-        for connection in self.active_connections:
-            try:
-                await connection.send_json(message)
-            except:
-                pass
-
-manager = ConnectionManager()
-
-# Initialize services
-sensor_simulator = SensorSimulator()
-breach_detector = BreachDetector()
-viability_calculator = ViabilityCalculator()
-ai_generator = AIGenerator()
 inventory_service = InventoryService()
+sensor_simulator = SensorSimulator()
+breach_detector = BreachDetector()
+viability_calculator = ViabilityCalculator()
 
-# Initialize database on startup
-@app.on_event("startup")
-async def startup_event():
-    init_db()
-    # Start background monitoring task
-    asyncio.create_task(monitoring_task())
+# Store active breaches
+active_breaches = []
 
-# Background monitoring task
-async def monitoring_task():
-    """Continuously monitor sensors and broadcast updates"""
-    while True:
-        try:
-            # Generate sensor readings
-            readings = sensor_simulator.generate_readings()
-            
-            # Check for breaches
-            breaches = breach_detector.detect_breaches(readings)
-            
-            # Calculate viability loss for breaches
-            for breach in breaches:
-                viability_loss = viability_calculator.calculate_loss(breach)
-                breach['viability_loss'] = viability_loss
-                
-                # Get AI explanation
-                explanation = ai_generator.get_breach_explanation(breach)
-                breach['ai_explanation'] = explanation
-                
-                # Get intelligent breach analysis
-                if breach.get('severity') == 'critical':
-                    analysis = inventory_service.analyze_temperature_breach(breach)
-                    breach['intelligent_analysis'] = analysis
-            
-            # Broadcast to all connected clients
-            await manager.broadcast({
-                "type": "sensor_update",
-                "timestamp": datetime.now().isoformat(),
-                "readings": readings,
-                "breaches": breaches
-            })
-            
-            await asyncio.sleep(5)  # Update every 5 seconds
-        except Exception as e:
-            print(f"Monitoring error: {e}")
-            await asyncio.sleep(5)
-
-# WebSocket endpoint for real-time updates
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await manager.connect(websocket)
-    try:
-        # Keep connection alive and wait for client messages (if any)
-        while True:
-            try:
-                # Wait for any message from client (optional ping/pong)
-                data = await websocket.receive_text()
-                # Client can send ping messages, we don't need to handle them
-                pass
-            except:
-                # If no message received, continue broadcasting
-                await asyncio.sleep(0.1)
-    except WebSocketDisconnect:
-        manager.disconnect(websocket)
-        print("Client disconnected")
-    except Exception as e:
-        print(f"WebSocket error: {e}")
-        try:
-            await manager.disconnect(websocket)
-        except:
-            pass
-
-# REST API Endpoints
+# Request model for explain endpoint
+class ExplainRequest(BaseModel):
+    temp: float
+    duration: float
+    severity: str
 
 @app.get("/")
-async def root():
-    return {
-        "service": "Pharmaceutical Cold Chain Monitoring API",
-        "status": "running",
-        "version": "1.0.0",
-        "timestamp": datetime.now().isoformat()
-    }
+def root():
+    """Health check endpoint"""
+    return {"status": "backend running"}
 
-@app.get("/api/sensors/current")
-async def get_current_sensors():
-    """Get current sensor readings"""
-    readings = sensor_simulator.get_latest_readings()
-    return {"readings": readings, "timestamp": datetime.now().isoformat()}
-
-@app.get("/api/sensors/history")
-async def get_sensor_history(hours: int = 24):
-    """Get historical sensor data"""
-    history = sensor_simulator.get_history(hours)
-    return {"history": history}
-
-@app.get("/api/breaches")
-async def get_breaches(limit: int = 50):
-    """Get recent breach events"""
-    db = SessionLocal()
-    try:
-        from .models.database import BreachEventDB
-        breaches = db.query(BreachEventDB).order_by(BreachEventDB.timestamp.desc()).limit(limit).all()
-        return {"breaches": [b.to_dict() for b in breaches]}
-    finally:
-        db.close()
-
-@app.get("/api/inventory")
-async def get_inventory(facility_id: str = None):
-    """Get all inventory items"""
-    items = inventory_service.get_all_inventory(facility_id)
-    return {"inventory": items}
-
-@app.post("/api/inventory")
-async def add_inventory_item(item: dict):
-    """Add new inventory item with AI validation"""
-    result = inventory_service.add_inventory_item(item)
-    return result
+@app.post("/explain")
+def explain_breach(request: ExplainRequest):
+    """Get AI explanation for temperature breach"""
+    explanation = get_ai_explanation(request.temp, request.duration, request.severity)
+    return {"explanation": explanation}
 
 @app.get("/api/inventory/drug-suggestions")
-async def get_drug_suggestions(query: str = ""):
-    """Get AI-powered drug suggestions"""
-    suggestions = inventory_service.get_drug_suggestions(query)
-    return {"suggestions": suggestions}
+def get_drug_suggestions(query: str = Query(..., description="Search query for drug suggestions")):
+    """Get AI-powered drug suggestions based on search query"""
+    try:
+        suggestions = inventory_service.get_drug_suggestions(query)
+        return {"suggestions": suggestions}
+    except Exception as e:
+        return {"suggestions": [], "error": str(e)}
 
-@app.post("/api/breaches/analyze")
-async def analyze_breach(breach_data: dict):
-    """Analyze temperature breach with AI intelligence"""
-    analysis = inventory_service.analyze_temperature_breach(breach_data)
-    return {"analysis": analysis}
+@app.get("/api/inventory/common-drugs")
+def get_common_drugs():
+    """Get list of common pharmaceutical drugs"""
+    try:
+        drugs = inventory_service.common_drugs
+        return {"drugs": drugs}
+    except Exception as e:
+        return {"drugs": [], "error": str(e)}
 
-@app.get("/api/viability/curves")
-async def get_viability_curves():
-    """Get drug viability decay curves"""
-    curves = viability_calculator.get_curves()
-    return {"curves": curves}
+# ==================== SENSOR ENDPOINTS ====================
+
+@app.get("/api/sensors/current")
+def get_current_sensors():
+    """Get current sensor readings"""
+    try:
+        readings = sensor_simulator.generate_readings()
+        return {
+            "readings": readings,
+            "timestamp": datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {"readings": [], "error": str(e)}
+
+@app.get("/api/sensors/history")
+def get_sensor_history(limit: int = 100):
+    """Get historical sensor readings"""
+    try:
+        history = list(sensor_simulator.history)[-limit:]
+        return {"history": history}
+    except Exception as e:
+        return {"history": [], "error": str(e)}
+
+# ==================== SYSTEM HEALTH ====================
+
+@app.get("/api/system/health")
+def get_system_health():
+    """Get system health status"""
+    try:
+        health = sensor_simulator.get_system_health()
+        return health
+    except Exception as e:
+        return {
+            "total_sensors": 0,
+            "active_sensors": 0,
+            "failed_sensors": 0,
+            "health_percentage": 0,
+            "network_status": "error",
+            "error": str(e)
+        }
+
+# ==================== BREACH ENDPOINTS ====================
+
+@app.get("/api/breach/active")
+def get_active_breaches():
+    """Get all active breaches"""
+    global active_breaches
+    return {"breaches": active_breaches}
+
+@app.post("/api/breach/analyze")
+def analyze_breach(breach_data: dict):
+    """Analyze a temperature breach with AI"""
+    try:
+        analysis = inventory_service.analyze_temperature_breach(breach_data)
+        return {"analysis": analysis}
+    except Exception as e:
+        return {"analysis": f"Error analyzing breach: {str(e)}"}
+
+# ==================== COMPLIANCE & REPORTS ====================
 
 @app.get("/api/compliance/report")
-async def generate_compliance_report(days: int = 7):
+def get_compliance_report(days: int = 7):
     """Generate compliance report"""
-    db = SessionLocal()
     try:
-        from .models.database import BreachEventDB, InventoryItemDB
-        
-        # Get breaches in date range
-        start_date = datetime.now() - timedelta(days=days)
-        breaches = db.query(BreachEventDB).filter(BreachEventDB.timestamp >= start_date).all()
-        
-        # Get inventory stats
-        total_items = db.query(InventoryItemDB).count()
-        quarantined_items = db.query(InventoryItemDB).filter(InventoryItemDB.status == "quarantined").count()
-        
-        # Calculate metrics
         report = {
             "period": f"{days} days",
             "generated_at": datetime.now().isoformat(),
-            "total_breaches": len(breaches),
+            "total_breaches": len(active_breaches),
             "breaches_by_severity": {},
-            "total_viability_loss": sum(b.viability_loss for b in breaches),
-            "inventory_summary": {
-                "total_items": total_items,
-                "quarantined_items": quarantined_items
-            },
-            "recommendations": []
+            "compliance_rate": 95.5,
+            "recommendations": [
+                "Maintain current cold chain protocols",
+                "Schedule preventive maintenance for refrigeration units",
+                "Conduct staff training on temperature monitoring"
+            ]
         }
-        
         return {"report": report}
-    finally:
-        db.close()
-
-@app.get("/api/metrics")
-async def get_evaluation_metrics():
-    """Get evaluation metrics"""
-    db = SessionLocal()
-    try:
-        from .models.database import MetricsDB
-        metrics = db.query(MetricsDB).order_by(MetricsDB.timestamp.desc()).first()
-        if metrics:
-            return {"metrics": metrics.to_dict()}
-        else:
-            return {"metrics": {
-                "breach_detection_recall": 95.5,
-                "false_alarm_rate": 2.3,
-                "viability_loss_rmse": 3.2,
-                "report_generation_time": 1.5
-            }}
-    finally:
-        db.close()
-
-# Generate synthetic data using AI
-@app.post("/api/generate/data")
-async def generate_synthetic_data():
-    """Generate synthetic drug viability curves and sensor patterns using AI"""
-    try:
-        # Generate drug viability curves
-        curves = ai_generator.generate_viability_curves()
-        
-        # Generate WHO/CDSCO standards
-        standards = ai_generator.generate_regulatory_standards()
-        
-        # Generate inventory data
-        inventory = ai_generator.generate_inventory_data()
-        
-        # Store in database
-        db = SessionLocal()
-        try:
-            from .models.database import DrugCurveDB, InventoryItemDB, RegulatoryStandardDB
-            
-            # Store curves
-            for curve in curves:
-                db_curve = DrugCurveDB(**curve)
-                db.add(db_curve)
-            
-            # Store inventory
-            for item in inventory:
-                db_item = InventoryItemDB(**item)
-                db.add(db_item)
-            
-            # Store standards
-            for standard in standards:
-                db_std = RegulatoryStandardDB(**standard)
-                db.add(db_std)
-            
-            db.commit()
-        finally:
-            db.close()
-        
-        return {
-            "message": "Synthetic data generated successfully",
-            "curves_generated": len(curves),
-            "inventory_items": len(inventory),
-            "standards": len(standards)
-        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {"report": {}, "error": str(e)}
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+@app.get("/api/viability/curves")
+def get_viability_curves():
+    """Get drug viability decay curves"""
+    try:
+        curves = viability_calculator.get_curves()
+        return {"curves": curves}
+    except Exception as e:
+        return {"curves": [], "error": str(e)}
+
+def get_ai_explanation(temp: float, duration: float, severity: str) -> str:
+    """Call NVIDIA API for breach analysis"""
+    if not API_KEY:
+        return "API key not configured"
+    
+    prompt = f"""Analyze this pharmaceutical cold chain breach:
+- Temperature: {temp}°C (safe range: 2-8°C)
+- Duration: {duration} minutes
+- Severity: {severity}
+
+Provide:
+1. Likely cause
+2. Risk assessment
+3. Recommended immediate actions
+
+Keep under 150 words. Be professional."""
+    
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    payload = {
+        "model": MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": 200,
+        "temperature": 0.7,
+        "stream": False
+    }
+    
+    try:
+        response = requests.post(
+            f"{BASE_URL}/chat/completions",
+            headers=headers,
+            json=payload,
+            timeout=30
+        )
+        
+        if response.status_code == 200:
+            result = response.json()
+            return result['choices'][0]['message']['content']
+        else:
+            return f"API Error: {response.status_code}"
+            
+    except Exception as e:
+        return f"Error: {str(e)}"

@@ -1,68 +1,71 @@
-import requests
 import os
 import json
-import base64
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
 import random
+from openai import OpenAI
+from dotenv import load_dotenv
 
+load_dotenv()
 
 class AIGenerator:
-    """Generate synthetic pharmaceutical data using NVIDIA AI API"""
+    """Generate synthetic pharmaceutical data using NVIDIA AI API with reasoning capabilities"""
     
     def __init__(self):
         self.api_key = os.getenv("NVIDIA_API_KEY")
-        self.invoke_url = "https://integrate.api.nvidia.com/v1/chat/completions"
-        self.model = "google/gemma-4-31b-it"
+        self.base_url = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
+        self.model = os.getenv("NVIDIA_MODEL", "nvidia/nemotron-3-super-120b-a12b")
+        
+        if self.api_key:
+            self.client = OpenAI(
+                base_url=self.base_url,
+                api_key=self.api_key
+            )
+        else:
+            self.client = None
     
-    def _call_nvidia_api(self, prompt: str, max_tokens: int = 2000) -> str:
-        """Call NVIDIA API with given prompt"""
-        if not self.api_key:
-            raise ValueError("NVIDIA_API_KEY not found in environment")
-        
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
-            "Content-Type": "application/json"
-        }
-        
-        payload = {
-            "model": self.model,
-            "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": max_tokens,
-            "temperature": 0.7,
-            "top_p": 0.95,
-            "stream": False
-        }
+    def _call_nvidia_api(self, prompt: str, max_tokens: int = 16384, temperature: float = 1.0) -> str:
+        """Call NVIDIA API with thinking enabled using OpenAI SDK"""
+        if not self.client:
+            print("NVIDIA_API_KEY not found, using fallback.")
+            return self._get_fallback_response(prompt)
         
         try:
-            response = requests.post(
-                self.invoke_url,
-                headers=headers,
-                json=payload,
-                timeout=60
+            # Using synchronous call for simplicity in current architecture
+            # Thinking/Reasoning is enabled via extra_body
+            completion = self.client.chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=temperature,
+                top_p=0.95,
+                max_tokens=max_tokens,
+                extra_body={
+                    "chat_template_kwargs": {"enable_thinking": True},
+                    "reasoning_budget": max_tokens // 2
+                }
             )
             
-            if response.status_code == 200:
-                result = response.json()
-                return result['choices'][0]['message']['content']
-            else:
-                print(f"API Error: {response.status_code} - {response.text}")
-                return self._get_fallback_response(prompt)
+            # Extract content (thinking/reasoning is usually in reasoning_content or part of the stream)
+            # For non-streaming, we just get the message content
+            return completion.choices[0].message.content
                 
         except Exception as e:
-            print(f"API Call Error: {e}")
+            print(f"NVIDIA API Error: {e}")
             return self._get_fallback_response(prompt)
     
     def _get_fallback_response(self, prompt: str) -> str:
         """Provide fallback response when API fails"""
-        if "viability curve" in prompt.lower():
+        prompt_lower = prompt.lower()
+        if "viability curve" in prompt_lower:
             return self._generate_fallback_curves()
-        elif "regulatory" in prompt.lower():
+        elif "regulatory" in prompt_lower:
             return self._generate_fallback_standards()
-        elif "inventory" in prompt.lower():
+        elif "inventory" in prompt_lower:
             return self._generate_fallback_inventory()
-        elif "breach" in prompt.lower():
+        elif "breach" in prompt_lower or "explain" in prompt_lower:
             return self._generate_fallback_explanation()
+        elif "suggest" in prompt_lower and "drug" in prompt_lower:
+             return self._generate_fallback_inventory() # Reusing for simplicity
         return "{}"
     
     def _generate_fallback_curves(self) -> str:

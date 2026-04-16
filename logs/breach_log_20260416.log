@@ -153,3 +153,193 @@
 2026-04-16 17:10:47,175 - INFO - Temperature 1.1°C is 0.8999999999999999°C below safe range
 2026-04-16 17:11:12,225 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
 2026-04-16 17:11:37,262 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:11:57,303 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:12:07,325 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:12:17,345 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:12:47,431 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 17:13:22,469 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:13:47,526 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 17:14:07,561 - INFO - Temperature 1.0°C is 1.0°C below safe range
+2026-04-16 17:14:47,626 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:15:07,662 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 17:15:17,683 - INFO - Temperature 1.7°C is 0.30000000000000004°C below safe range
+2026-04-16 17:16:42,860 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:17:07,941 - INFO - Temperature 8.7°C is 0.6999999999999993°C above safe range
+2026-04-16 17:17:38,037 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:17:48,045 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:18:18,132 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:18:33,176 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 17:18:53,233 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:19:03,276 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 17:19:23,305 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 17:19:43,347 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:19:58,382 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:20:23,434 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 17:20:43,498 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:21:13,536 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 17:21:48,594 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:22:03,610 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:22:18,645 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:22:33,653 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:22:48,710 - INFO - Temperature 1.5°C is 0.5°C below safe range
+2026-04-16 17:22:58,719 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:23:13,758 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:23:33,766 - INFO - Temperature 1.3°C is 0.7°C below safe range
+2026-04-16 17:24:03,808 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:24:33,841 - INFO - Temperature 1.0°C is 1.0°C below safe range
+2026-04-16 17:25:03,915 - INFO - Temperature 10.0°C is 2.0°C above safe range
+2026-04-16 17:25:18,940 - INFO - Temperature 8.8°C is 0.8000000000000007°C above safe range
+2026-04-16 17:25:49,014 - INFO - Temperature 8.7°C is 0.6999999999999993°C above safe range
+2026-04-16 17:26:04,070 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 17:26:19,117 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:26:29,146 - INFO - Temperature 1.5°C is 0.5°C below safe range
+2026-04-16 17:27:09,233 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:27:19,252 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:28:09,334 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 17:28:29,347 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:28:54,429 - INFO - Temperature 1.4°C is 0.6000000000000001°C below safe range
+2026-04-16 17:29:04,455 - INFO - Temperature 1.5°C is 0.5°C below safe range
+2026-04-16 17:29:14,455 - INFO - Temperature 8.7°C is 0.6999999999999993°C above safe range
+2026-04-16 17:29:59,553 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:30:24,580 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:30:34,610 - INFO - Temperature 1.4°C is 0.6000000000000001°C below safe range
+2026-04-16 17:30:44,639 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:30:54,674 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:31:29,749 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:32:09,868 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:32:24,908 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:33:10,038 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 17:33:35,083 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:34:00,148 - INFO - Temperature 1.1°C is 0.8999999999999999°C below safe range
+2026-04-16 17:34:10,165 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:34:35,810 - INFO - Temperature 8.9°C is 0.9000000000000004°C above safe range
+2026-04-16 17:34:55,833 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:35:10,873 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 17:35:25,885 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:35:40,885 - INFO - Temperature 8.5°C is 0.5°C above safe range
+2026-04-16 17:35:55,888 - INFO - Temperature 1.3°C is 0.7°C below safe range
+2026-04-16 17:36:20,936 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:37:01,007 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:37:11,025 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:37:51,097 - INFO - Temperature 1.4°C is 0.6000000000000001°C below safe range
+2026-04-16 17:38:01,091 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:38:11,108 - INFO - Temperature 10.0°C is 2.0°C above safe range
+2026-04-16 17:38:21,109 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 17:38:36,131 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:38:46,149 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:39:06,156 - INFO - Temperature 1.5°C is 0.5°C below safe range
+2026-04-16 17:39:21,204 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:39:36,217 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 17:40:01,260 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:40:21,290 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:41:01,383 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 17:41:11,400 - INFO - Temperature 8.8°C is 0.8000000000000007°C above safe range
+2026-04-16 17:41:21,402 - INFO - Temperature 1.4°C is 0.6000000000000001°C below safe range
+2026-04-16 17:41:31,425 - INFO - Temperature 8.9°C is 0.9000000000000004°C above safe range
+2026-04-16 17:41:41,479 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:42:11,468 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 17:42:26,525 - INFO - Temperature 1.5°C is 0.5°C below safe range
+2026-04-16 17:42:56,537 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 17:43:31,596 - INFO - Temperature 1.1°C is 0.8999999999999999°C below safe range
+2026-04-16 17:43:51,644 - INFO - Temperature 1.0°C is 1.0°C below safe range
+2026-04-16 17:44:01,668 - INFO - Temperature 1.3°C is 0.7°C below safe range
+2026-04-16 17:44:16,684 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:44:31,729 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 17:44:46,761 - INFO - Temperature 10.0°C is 2.0°C above safe range
+2026-04-16 17:45:06,772 - INFO - Temperature 1.7°C is 0.30000000000000004°C below safe range
+2026-04-16 17:45:21,801 - INFO - Temperature 1.1°C is 0.8999999999999999°C below safe range
+2026-04-16 17:45:41,810 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:45:51,846 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:46:01,879 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:46:16,893 - INFO - Temperature 1.7°C is 0.30000000000000004°C below safe range
+2026-04-16 17:46:31,919 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:46:56,983 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:47:27,068 - INFO - Temperature 8.9°C is 0.9000000000000004°C above safe range
+2026-04-16 17:47:52,136 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:48:02,153 - INFO - Temperature 1.4°C is 0.6000000000000001°C below safe range
+2026-04-16 17:48:22,210 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:48:42,261 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 17:49:07,281 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 17:49:17,319 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:49:47,364 - INFO - Temperature 8.7°C is 0.6999999999999993°C above safe range
+2026-04-16 17:50:12,403 - INFO - Temperature 8.9°C is 0.9000000000000004°C above safe range
+2026-04-16 17:50:22,436 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:50:47,501 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:50:57,504 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 17:51:12,514 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 17:51:32,516 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 17:52:12,586 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 17:52:32,632 - INFO - Temperature 10.0°C is 2.0°C above safe range
+2026-04-16 17:53:02,672 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 17:53:32,761 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 17:54:07,846 - INFO - Temperature 8.5°C is 0.5°C above safe range
+2026-04-16 17:55:07,973 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:55:22,980 - INFO - Temperature 8.7°C is 0.6999999999999993°C above safe range
+2026-04-16 17:55:43,020 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:56:03,047 - INFO - Temperature 1.5°C is 0.5°C below safe range
+2026-04-16 17:56:23,091 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 17:56:33,102 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:56:48,132 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 17:56:58,153 - INFO - Temperature 1.2°C is 0.8°C below safe range
+2026-04-16 17:57:18,200 - INFO - Temperature 10.0°C is 2.0°C above safe range
+2026-04-16 17:57:38,213 - INFO - Temperature 8.7°C is 0.6999999999999993°C above safe range
+2026-04-16 17:57:58,227 - INFO - Temperature 1.2°C is 0.8°C below safe range
+2026-04-16 17:58:18,254 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 17:58:48,318 - INFO - Temperature 1.4°C is 0.6000000000000001°C below safe range
+2026-04-16 17:59:13,383 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 17:59:43,389 - INFO - Temperature 1.7°C is 0.30000000000000004°C below safe range
+2026-04-16 17:59:53,399 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 18:00:18,437 - INFO - Temperature 8.9°C is 0.9000000000000004°C above safe range
+2026-04-16 18:00:53,486 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 18:01:08,540 - INFO - Temperature 1.1°C is 0.8999999999999999°C below safe range
+2026-04-16 18:01:18,558 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 18:01:48,616 - INFO - Temperature 1.2°C is 0.8°C below safe range
+2026-04-16 18:02:28,678 - INFO - Temperature 1.6°C is 0.3999999999999999°C below safe range
+2026-04-16 18:02:48,727 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 18:03:18,775 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 18:03:28,791 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:04:48,973 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 18:05:19,023 - INFO - Temperature 1.3°C is 0.7°C below safe range
+2026-04-16 18:05:44,079 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 18:05:54,146 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:07:24,354 - INFO - Temperature 8.5°C is 0.5°C above safe range
+2026-04-16 18:07:44,406 - INFO - Temperature 8.8°C is 0.8000000000000007°C above safe range
+2026-04-16 18:07:54,448 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:08:24,517 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 18:08:54,513 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 18:09:19,536 - INFO - Temperature 10.0°C is 2.0°C above safe range
+2026-04-16 18:09:34,552 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 18:09:44,550 - INFO - Temperature 1.5°C is 0.5°C below safe range
+2026-04-16 18:10:04,615 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 18:10:19,624 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 18:10:29,653 - INFO - Temperature 10.0°C is 2.0°C above safe range
+2026-04-16 18:11:09,766 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 18:11:34,778 - INFO - Temperature 8.4°C is 0.40000000000000036°C above safe range
+2026-04-16 18:11:59,850 - INFO - Temperature 8.6°C is 0.5999999999999996°C above safe range
+2026-04-16 18:12:24,891 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 18:13:09,966 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 18:13:35,000 - INFO - Temperature 1.7°C is 0.30000000000000004°C below safe range
+2026-04-16 18:14:15,023 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:14:25,038 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 18:14:40,072 - INFO - Temperature 1.4°C is 0.6000000000000001°C below safe range
+2026-04-16 18:15:00,138 - INFO - Temperature 8.1°C is 0.09999999999999964°C above safe range
+2026-04-16 18:15:15,146 - INFO - Temperature 8.7°C is 0.6999999999999993°C above safe range
+2026-04-16 18:15:25,138 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range
+2026-04-16 18:15:45,141 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:16:05,160 - INFO - Temperature 8.2°C is 0.1999999999999993°C above safe range
+2026-04-16 18:16:30,179 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 18:16:50,222 - INFO - Temperature 1.9°C is 0.10000000000000009°C below safe range
+2026-04-16 18:17:20,314 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:17:50,391 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 18:18:00,414 - INFO - Temperature 8.3°C is 0.3000000000000007°C above safe range
+2026-04-16 18:18:20,445 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:18:40,454 - INFO - Temperature 1.7°C is 0.30000000000000004°C below safe range
+2026-04-16 18:19:05,518 - INFO - Temperature 8.5°C is 0.5°C above safe range
+2026-04-16 18:19:15,526 - INFO - Temperature 8.5°C is 0.5°C above safe range
+2026-04-16 18:19:30,587 - INFO - Temperature 8.9°C is 0.9000000000000004°C above safe range
+2026-04-16 18:19:45,600 - INFO - Temperature 8.8°C is 0.8000000000000007°C above safe range
+2026-04-16 18:20:00,651 - INFO - Temperature 0.0°C is 2.0°C below safe range
+2026-04-16 18:20:10,691 - INFO - Temperature -1.0°C is 3.0°C below safe range by significant margin
+2026-04-16 18:20:20,709 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 18:20:45,765 - INFO - Temperature 11.0°C is 3.0°C above safe range by significant margin
+2026-04-16 18:21:15,870 - INFO - Temperature 1.8°C is 0.19999999999999996°C below safe range

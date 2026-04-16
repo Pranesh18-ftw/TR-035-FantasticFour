@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './IntelligentBreachPopup.css';
 
-const IntelligentBreachPopup = ({ breach, onClose, onAnalyze }) => {
+const IntelligentBreachPopup = ({ breach, onClose }) => {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
   const [expanded, setExpanded] = useState(false);
