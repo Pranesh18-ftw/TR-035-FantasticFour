@@ -58,11 +58,28 @@ const Inventory = () => {
   };
 
   const handleSelectDrug = (drug) => {
+    // Generate sample data for demo purposes
+    const batchNumber = `BATCH-${Math.floor(Math.random() * 9000) + 1000}`;
+    const quantity = Math.floor(Math.random() * 500) + 50;
+    const facilities = ['FAC_1', 'FAC_2', 'FAC_3'];
+    const storageUnits = ['COLD_STORE_1', 'COLD_STORE_2', 'COLD_STORE_3', 'PORTABLE_1'];
+    const facilityId = facilities[Math.floor(Math.random() * facilities.length)];
+    const storageUnit = storageUnits[Math.floor(Math.random() * storageUnits.length)];
+    
+    // Generate expiry date 6-24 months in the future
+    const expiryDate = new Date();
+    expiryDate.setMonth(expiryDate.getMonth() + Math.floor(Math.random() * 18) + 6);
+    const expiryDateStr = expiryDate.toISOString().split('T')[0];
+    
     setNewItem({
-      ...newItem,
       drug_name: drug.name,
-      optimal_temp_min: drug.temp_min,
-      optimal_temp_max: drug.temp_max
+      batch_number: batchNumber,
+      quantity: quantity,
+      storage_unit: storageUnit,
+      facility_id: facilityId,
+      optimal_temp_min: drug.temp_min || 2,
+      optimal_temp_max: drug.temp_max || 8,
+      expiry_date: expiryDateStr
     });
     setShowAISuggestions(false);
     setShowAddForm(true);

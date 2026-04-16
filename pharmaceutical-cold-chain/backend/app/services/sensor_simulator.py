@@ -28,6 +28,10 @@ class SensorSimulator:
         self.last_network_check = datetime.now()
         self.network_recovery_time = datetime.now()
         
+        # Demo: Critical breach simulation every 15 seconds
+        self.last_critical_breach = datetime.now() - timedelta(seconds=20)
+        self.critical_breach_interval = 15  # seconds
+        
         # Initialize sensors after failure tracking is set up
         self._init_sensors()
     
@@ -95,6 +99,12 @@ class SensorSimulator:
             # Return empty readings to simulate network loss
             return []
         
+        # Check if we should trigger a critical breach for demo (every 15 seconds)
+        trigger_critical_breach = False
+        if (timestamp - self.last_critical_breach).seconds >= self.critical_breach_interval:
+            trigger_critical_breach = True
+            self.last_critical_breach = timestamp
+        
         for sensor_id, state in self.sensor_states.items():
             # Check for sensor failure
             if self._simulate_sensor_failure(sensor_id):
@@ -103,6 +113,10 @@ class SensorSimulator:
             
             # Determine if this reading should be a breach
             is_breach = random.random() < state["breach_probability"]
+            
+            # Force critical breach on first sensor every 15 seconds for demo
+            if trigger_critical_breach and sensor_id == list(self.sensor_states.keys())[0]:
+                is_breach = True
             
             if is_breach:
                 # Generate breach temperature
