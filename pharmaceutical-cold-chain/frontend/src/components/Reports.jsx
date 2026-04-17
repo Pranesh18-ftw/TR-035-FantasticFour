@@ -8,14 +8,17 @@ const Reports = () => {
   const [report, setReport] = useState(null);
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [days, setDays] = useState(7);
 
   const fetchReport = useCallback(async () => {
     try {
+      setError(null);
       const response = await axios.get(`${API_URL}/api/compliance/report?days=${days}`);
       setReport(response.data.report);
-    } catch (error) {
-      console.error('Error fetching report:', error);
+    } catch (err) {
+      console.error('Error fetching report:', err);
+      setError(err.message || 'Failed to load report');
       setReport({
         period: `${days} days`,
         total_breaches: 0,
@@ -30,8 +33,9 @@ const Reports = () => {
     try {
       const response = await axios.get(`${API_URL}/api/metrics`);
       setMetrics(response.data.metrics);
-    } catch (error) {
-      console.error('Error fetching metrics:', error);
+    } catch (err) {
+      console.error('Error fetching metrics:', err);
+      setError(err.message || 'Failed to load metrics');
       setMetrics({
         breach_detection_recall: 95,
         false_alarm_rate: 2,
@@ -71,6 +75,17 @@ const Reports = () => {
       <div className="loading-container">
         <div className="spinner"></div>
         <span>Loading reports...</span>
+      </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="dashboard-container">
+      <div className="glass-card" style={{ textAlign: 'center', padding: '2rem' }}>
+        <div style={{ color: 'var(--accent-red)', fontSize: '2rem', marginBottom: '1rem' }}>⚠️</div>
+        <h3 style={{ color: 'var(--accent-red)', marginBottom: '1rem' }}>Error Loading Reports</h3>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>{error}</p>
+        <button onClick={() => { fetchReport(); fetchMetrics(); }} className="btn-primary">Retry</button>
       </div>
     </div>
   );
