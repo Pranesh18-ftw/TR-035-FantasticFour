@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react'
-import './App.css'
-import './styles/futuristic.css'
+import './styles/modern.css'
 import { ThemeProvider } from './contexts/ThemeContext'
-import ControlCenter from './components/ControlCenter'
-import Dashboard from './components/Dashboard'
-import Monitoring from './components/Monitoring'
-import Inventory from './components/Inventory'
-import Reports from './components/Reports'
+import Layout from './components/Layout'
+import ModernDashboard from './components/ModernDashboard'
+import ModernInventory from './components/ModernInventory'
+import ModernReports from './components/ModernReports'
+import ModernMonitoring from './components/ModernMonitoring'
 import { useDataFetching } from './hooks/useDataFetching'
 import { useWebSocket } from './hooks/useWebSocket'
 
@@ -101,50 +100,49 @@ function App() {
         </button>
       </nav>
 
-      {/* Loading & Error States */}
-      {loading && (
-        <div style={{ background: 'var(--neon-blue)', color: 'white', padding: '0.5rem 1rem', textAlign: 'center' }}>
-          ⏳ Loading data from backend... (WebSocket: {isConnected ? '✅' : '❌'})
-        </div>
-      )}
-      {error && (
-        <div style={{ background: 'var(--neon-red)', color: 'white', padding: '0.5rem 1rem', textAlign: 'center' }}>
-          ⚠️ {error} | Sensors: {sensorData.length} | Inventory: {inventory.length}
-        </div>
-      )}
-      
-      {/* Main Content */}
-      <main style={{ flex: 1, overflow: 'auto' }}>
+      <Layout 
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        isConnected={isConnected}
+        hasActiveBreach={hasActiveBreach}
+        criticalCount={criticalCount}
+        currentTime={currentTime}
+        loading={loading}
+        error={error}
+        sensorData={sensorData}
+        inventory={inventory}
+      >
         {activeTab === 'dashboard' && (
-          <ControlCenter 
+          <ModernDashboard 
             sensorData={sensorData} 
             breaches={breaches} 
-            wsConnected={isConnected}
             inventory={inventory}
             metrics={metrics}
+            wsConnected={isConnected}
           />
         )}
         {activeTab === 'monitoring' && (
-          <Monitoring 
+          <ModernMonitoring 
             sensorData={sensorData} 
             breaches={breaches} 
             inventory={inventory}
           />
         )}
         {activeTab === 'inventory' && (
-          <Inventory 
-            initialInventory={inventory}
+          <ModernInventory 
+            inventory={inventory}
+            loading={loading}
           />
         )}
         {activeTab === 'reports' && (
-          <Reports 
+          <ModernReports 
             complianceReport={complianceReport}
             metrics={metrics}
             breaches={breaches}
             inventory={inventory}
           />
         )}
-      </main>
+      </Layout>
     </div>
   )
 }
