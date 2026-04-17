@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
+import './styles/futuristic.css'
+import ControlCenter from './components/ControlCenter'
 import Dashboard from './components/Dashboard'
 import Monitoring from './components/Monitoring'
 import Inventory from './components/Inventory'
@@ -130,7 +132,7 @@ function App() {
       
       {/* Main Content */}
       <main style={{ flex: 1, overflow: 'auto' }}>
-        {activeTab === 'dashboard' && <Dashboard sensorData={sensorData} breaches={breaches} />}
+        {activeTab === 'dashboard' && <ControlCenter sensorData={sensorData} breaches={breaches} wsConnected={isConnected} />}
         {activeTab === 'monitoring' && <Monitoring sensorData={sensorData} breaches={breaches} />}
         {activeTab === 'inventory' && <Inventory />}
         {activeTab === 'reports' && <Reports />}
