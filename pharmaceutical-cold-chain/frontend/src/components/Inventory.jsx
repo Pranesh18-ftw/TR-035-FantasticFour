@@ -28,7 +28,12 @@ const Inventory = () => {
   const fetchInventory = async () => {
     try {
       const response = await axios.get(`${API_URL}/api/inventory`);
-      setInventory(response.data.inventory);
+      // Map backend 'viability' to frontend 'current_viability'
+      const mappedInventory = response.data.inventory.map(item => ({
+        ...item,
+        current_viability: item.viability || item.current_viability || 100
+      }));
+      setInventory(mappedInventory);
     } catch (error) {
       console.error('Error fetching inventory:', error);
     } finally {
