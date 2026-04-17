@@ -52,19 +52,31 @@ def main():
     # Start Frontend
     print_status("Frontend", "starting", "Port 5173")
     try:
-        frontend_process = subprocess.Popen(
-            ["npm", "run", "dev"],
-            cwd=frontend_dir,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            creationflags=subprocess.CREATE_NEW_CONSOLE if sys.platform == "win32" else 0
-        )
+        # Use shell=True on Windows to find npm in PATH
+        if sys.platform == "win32":
+            frontend_process = subprocess.Popen(
+                "npm run dev",
+                cwd=str(frontend_dir),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+                creationflags=subprocess.CREATE_NEW_CONSOLE
+            )
+        else:
+            frontend_process = subprocess.Popen(
+                ["npm", "run", "dev"],
+                cwd=str(frontend_dir),
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
         time.sleep(5)  # Give frontend time to start
         print_status("Frontend", "running", "http://localhost:5173")
     except Exception as e:
         print_status("Frontend", "error", str(e))
-        backend_process.terminate()
-        return
+        print("\n⚠️  Try running frontend manually:")
+        print(f"   cd {frontend_dir}")
+        print("   npm run dev")
+        print(f"\n   Then open: http://localhost:5174")
     
     # Open browser
     print("\n🌐 Opening browser...")
