@@ -7,6 +7,7 @@ const API_URL = 'http://localhost:8002';
 const Inventory = () => {
   const [inventory, setInventory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -27,6 +28,7 @@ const Inventory = () => {
 
   const fetchInventory = async () => {
     try {
+      setError(null);
       const response = await axios.get(`${API_URL}/api/inventory`);
       // Map backend 'viability' to frontend 'current_viability'
       const mappedInventory = response.data.inventory.map(item => ({
@@ -34,8 +36,9 @@ const Inventory = () => {
         current_viability: item.viability || item.current_viability || 100
       }));
       setInventory(mappedInventory);
-    } catch (error) {
-      console.error('Error fetching inventory:', error);
+    } catch (err) {
+      console.error('Error fetching inventory:', err);
+      setError(err.message || 'Failed to load inventory');
     } finally {
       setLoading(false);
     }
@@ -115,6 +118,17 @@ const Inventory = () => {
       <div className="loading-container">
         <div className="spinner"></div>
         <span>Loading inventory...</span>
+      </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="dashboard-container">
+      <div className="glass-card" style={{ textAlign: 'center', padding: '2rem' }}>
+        <div style={{ color: 'var(--accent-red)', fontSize: '2rem', marginBottom: '1rem' }}>⚠️</div>
+        <h3 style={{ color: 'var(--accent-red)', marginBottom: '1rem' }}>Error Loading Inventory</h3>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem' }}>{error}</p>
+        <button onClick={fetchInventory} className="btn-primary">Retry</button>
       </div>
     </div>
   );
