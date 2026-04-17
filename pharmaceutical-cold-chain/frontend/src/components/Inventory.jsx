@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import DetailPanel from './DetailPanel';
+import InventoryDetail from './InventoryDetail';
 import AIDrugSuggestions from './AIDrugSuggestions';
 
 const API_URL = 'http://localhost:8002';
@@ -11,6 +13,8 @@ const Inventory = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [showItemDetail, setShowItemDetail] = useState(false);
   const [newItem, setNewItem] = useState({
     drug_name: '',
     batch_number: '',
@@ -99,6 +103,16 @@ const Inventory = () => {
     });
     setShowAISuggestions(false);
     setShowAddForm(true);
+  };
+
+  const handleItemClick = (item) => {
+    setSelectedItem(item);
+    setShowItemDetail(true);
+  };
+
+  const handleCloseItemDetail = () => {
+    setShowItemDetail(false);
+    setSelectedItem(null);
   };
 
   const handleAddCustomDrug = () => {
@@ -326,7 +340,17 @@ const Inventory = () => {
             </thead>
             <tbody>
               {inventory.map(item => (
-                <tr key={item.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+                <tr 
+                  key={item.id} 
+                  style={{ 
+                    borderBottom: '1px solid var(--border-subtle)',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s ease',
+                  }}
+                  onClick={() => handleItemClick(item)}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'var(--bg-glass)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
                   <td style={{ padding: '1rem', fontWeight: 600 }}>{item.drug_name}</td>
                   <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>{item.batch_number}</td>
                   <td style={{ padding: '1rem', color: 'var(--text-secondary)' }}>{item.quantity}</td>
@@ -350,6 +374,18 @@ const Inventory = () => {
           </table>
         </div>
       </div>
+
+      {/* Inventory Detail Panel */}
+      <DetailPanel 
+        isOpen={showItemDetail}
+        onClose={handleCloseItemDetail}
+        title={selectedItem?.drug_name || 'Drug Details'}
+      >
+        <InventoryDetail 
+          item={selectedItem}
+          onClose={handleCloseItemDetail}
+        />
+      </DetailPanel>
     </div>
   );
 };

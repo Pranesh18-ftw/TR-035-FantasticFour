@@ -45,6 +45,34 @@
 }
 
 /* =====================================================
+   LIGHT THEME (data-theme="light")
+   ===================================================== */
+
+body[data-theme="light"] {
+  /* Core Light Theme */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  
+  /* Text Colors */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  
+  /* Borders */
+  --border-subtle: rgba(148, 163, 184, 0.3);
+  --border-glow: rgba(59, 130, 246, 0.2);
+  
+  /* Neon accents - less glow in light mode */
+  --neon-green-glow: rgba(16, 185, 129, 0.2);
+  --neon-orange-glow: rgba(245, 158, 11, 0.2);
+  --neon-red-glow: rgba(239, 68, 68, 0.2);
+  --neon-blue-glow: rgba(59, 130, 246, 0.2);
+  --neon-cyan-glow: rgba(6, 182, 212, 0.2);
+}
+
+/* =====================================================
    GLOBAL STYLES
    ===================================================== */
 
@@ -60,6 +88,7 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background var(--transition-medium), color var(--transition-medium);
 }
 
 #root {

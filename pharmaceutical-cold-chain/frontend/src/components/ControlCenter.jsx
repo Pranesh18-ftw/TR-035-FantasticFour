@@ -1,9 +1,14 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea, ReferenceLine } from 'recharts';
+import { useTheme } from '../contexts/ThemeContext';
+import DetailPanel from './DetailPanel';
+import AlertDetail from './AlertDetail';
 import '../styles/futuristic.css';
 
 const ControlCenter = ({ sensorData, breaches, wsConnected }) => {
+  const { theme, toggleTheme, isDark } = useTheme();
   const [selectedAlert, setSelectedAlert] = useState(null);
+  const [showAlertDetail, setShowAlertDetail] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [breachMode, setBreachMode] = useState(false);
   const [aiExplanation, setAiExplanation] = useState(null);
@@ -92,8 +97,14 @@ const ControlCenter = ({ sensorData, breaches, wsConnected }) => {
 
   const handleAlertClick = (alert) => {
     setSelectedAlert(alert);
+    setShowAlertDetail(true);
     const breach = breaches.find(b => b.id === alert.id);
     if (breach) generateAIExplanation(breach);
+  };
+
+  const handleCloseAlertDetail = () => {
+    setShowAlertDetail(false);
+    setSelectedAlert(null);
   };
 
   return (
@@ -104,12 +115,36 @@ const ControlCenter = ({ sensorData, breaches, wsConnected }) => {
       {/* Status Bar */}
       <div className={`status-bar ${breachMode ? 'breach-active' : ''}`}>
         <div className="status-title">Cold Chain Control System</div>
-        <div className={`status-indicator ${breachMode ? 'breach' : 'stable'}`}>
-          <div className="status-indicator-dot" />
-          <span>{breachMode ? 'BREACH DETECTED' : 'SYSTEM STABLE'}</span>
-        </div>
-        <div className="status-time">
-          {currentTime.toLocaleTimeString('en-US', { hour12: false })}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          {/* Theme Toggle */}
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: 'var(--bg-glass)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '20px',
+              padding: '0.5rem 1rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              cursor: 'pointer',
+              color: 'var(--text-primary)',
+              fontSize: '0.875rem',
+              transition: 'all 0.2s ease',
+            }}
+            title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            <span style={{ fontSize: '1rem' }}>{isDark ? '🌙' : '☀️'}</span>
+            <span style={{ fontWeight: 500 }}>{isDark ? 'Dark' : 'Light'}</span>
+          </button>
+          
+          <div className={`status-indicator ${breachMode ? 'breach' : 'stable'}`}>
+            <div className="status-indicator-dot" />
+            <span>{breachMode ? 'BREACH DETECTED' : 'SYSTEM STABLE'}</span>
+          </div>
+          <div className="status-time">
+            {currentTime.toLocaleTimeString('en-US', { hour12: false })}
+          </div>
         </div>
       </div>
 
@@ -275,59 +310,17 @@ const ControlCenter = ({ sensorData, breaches, wsConnected }) => {
         </div>
       )}
 
-      {/* Breach Detail Modal */}
-      {selectedAlert && (
-        <div 
-          className="breach-detail-panel" 
-          style={{ 
-            position: 'fixed', 
-            bottom: '20px', 
-            right: '20px', 
-            width: '350px',
-            zIndex: 1000
-          }}
-        >
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h3 style={{ margin: 0, color: 'var(--neon-red)' }}>⚠️ Alert Details</h3>
-            <button 
-              onClick={() => setSelectedAlert(null)}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: 'var(--text-muted)', 
-                cursor: 'pointer',
-                fontSize: '1.2rem'
-              }}
-            >
-              ×
-            </button>
-          </div>
-          <div style={{ fontSize: '0.875rem', lineHeight: '1.6' }}>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Sensor: </span>
-              <span style={{ color: 'var(--text-primary)' }}>{selectedAlert.sensor}</span>
-            </div>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Temperature: </span>
-              <span style={{ color: 'var(--neon-red)', fontWeight: 'bold' }}>{selectedAlert.temp}°C</span>
-            </div>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Duration: </span>
-              <span style={{ color: 'var(--text-primary)' }}>{selectedAlert.duration} minutes</span>
-            </div>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <span style={{ color: 'var(--text-muted)' }}>Severity: </span>
-              <span style={{ 
-                color: selectedAlert.severity === 'critical' ? 'var(--neon-red)' : 'var(--neon-orange)',
-                textTransform: 'uppercase',
-                fontWeight: 'bold'
-              }}>
-                {selectedAlert.severity}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Alert Detail Panel */}
+      <DetailPanel 
+        isOpen={showAlertDetail}
+        onClose={handleCloseAlertDetail}
+        title={`Alert: ${selectedAlert?.sensor || ''}`}
+      >
+        <AlertDetail 
+          alert={selectedAlert}
+          onClose={handleCloseAlertDetail}
+        />
+      </DetailPanel>
     </div>
   );
 };

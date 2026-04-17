@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import './styles/futuristic.css'
+import { ThemeProvider } from './contexts/ThemeContext'
 import ControlCenter from './components/ControlCenter'
 import Dashboard from './components/Dashboard'
 import Monitoring from './components/Monitoring'
@@ -141,4 +142,13 @@ function App() {
   )
 }
 
-export default App
+// Wrap App with ThemeProvider
+function AppWithTheme() {
+  return (
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
+  )
+}
+
+export default AppWithTheme
