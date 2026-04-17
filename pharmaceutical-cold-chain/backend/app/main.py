@@ -8,6 +8,7 @@ from .services.inventory_service import InventoryService
 from .services.sensor_simulator import SensorSimulator
 from .services.breach_detector import BreachDetector
 from .services.viability_calculator import ViabilityCalculator
+from .services.data_simulator import simulator, should_trigger_demo_breach
 from datetime import datetime, timedelta
 
 # Load environment variables
@@ -168,11 +169,11 @@ def delete_inventory_item(item_id: int):
 
 @app.get("/api/sensors/current")
 def get_current_sensors():
-    """Get current sensor readings"""
+    """Get current sensor readings from demo simulator"""
     try:
-        readings = sensor_simulator.generate_readings()
+        data = simulator.get_current_data()
         return {
-            "readings": readings,
+            "readings": data['readings'],
             "timestamp": datetime.now().isoformat()
         }
     except Exception as e:
@@ -182,7 +183,7 @@ def get_current_sensors():
 def get_sensor_history(limit: int = 100):
     """Get historical sensor readings"""
     try:
-        history = list(sensor_simulator.history)[-limit:]
+        history = simulator.readings_history[-limit:]
         return {"history": history}
     except Exception as e:
         return {"history": [], "error": str(e)}
@@ -209,9 +210,12 @@ def get_system_health():
 
 @app.get("/api/breach/active")
 def get_active_breaches():
-    """Get all active breaches"""
-    global active_breaches
-    return {"breaches": active_breaches}
+    """Get all active breaches from demo simulator"""
+    try:
+        data = simulator.get_current_data()
+        return {"breaches": data['breaches']}
+    except Exception as e:
+        return {"breaches": [], "error": str(e)}
 
 @app.post("/api/breach/analyze")
 def analyze_breach(breach_data: dict):
@@ -226,20 +230,10 @@ def analyze_breach(breach_data: dict):
 
 @app.get("/api/compliance/report")
 def get_compliance_report(days: int = 7):
-    """Generate compliance report"""
+    """Generate compliance report from demo simulator"""
     try:
-        report = {
-            "period": f"{days} days",
-            "generated_at": datetime.now().isoformat(),
-            "total_breaches": len(active_breaches),
-            "breaches_by_severity": {},
-            "compliance_rate": 95.5,
-            "recommendations": [
-                "Maintain current cold chain protocols",
-                "Schedule preventive maintenance for refrigeration units",
-                "Conduct staff training on temperature monitoring"
-            ]
-        }
+        report = simulator.get_compliance_report(days)
+        report["generated_at"] = datetime.now().isoformat()
         return {"report": report}
     except Exception as e:
         return {"report": {}, "error": str(e)}
@@ -255,15 +249,10 @@ def get_viability_curves():
 
 @app.get("/api/metrics")
 def get_metrics():
-    """Get system evaluation metrics"""
+    """Get system evaluation metrics from demo simulator"""
     try:
-        metrics = {
-            "breach_detection_recall": 95.5,
-            "false_alarm_rate": 2.1,
-            "viability_loss_rmse": 3.2,
-            "report_generation_time": 1.5,
-            "calculated_at": datetime.now().isoformat()
-        }
+        metrics = simulator.get_metrics()
+        metrics["calculated_at"] = datetime.now().isoformat()
         return {"metrics": metrics}
     except Exception as e:
         return {"metrics": {}, "error": str(e)}

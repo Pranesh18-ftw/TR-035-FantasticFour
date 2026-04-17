@@ -8,9 +8,9 @@ const ModernDashboard = ({ sensorData, breaches, inventory, metrics }) => {
   const atRiskItems = inventory.filter(i => (i.current_viability || i.viability || 100) < 80).length;
   const activeBreaches = breaches.filter(b => b.status === 'active').length;
   
-  // Chart data - last 20 readings
-  const chartData = sensorData?.slice(-20).map(reading => ({
-    time: reading.timestamp ? new Date(reading.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : '--:--',
+  // Chart data - last 50 readings for smoother chart
+  const chartData = sensorData?.slice(-50).map(reading => ({
+    time: reading.timestamp ? new Date(reading.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '--:--:--',
     temperature: reading.temperature || 0,
   })) || [];
 
