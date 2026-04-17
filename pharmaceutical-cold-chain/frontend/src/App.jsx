@@ -7,48 +7,30 @@ import Dashboard from './components/Dashboard'
 import Monitoring from './components/Monitoring'
 import Inventory from './components/Inventory'
 import Reports from './components/Reports'
+import { useDataFetching } from './hooks/useDataFetching'
 import { useWebSocket } from './hooks/useWebSocket'
-
-const API_URL = 'http://localhost:8002'
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
   const [currentTime, setCurrentTime] = useState(new Date())
-  const [initialSensorData, setInitialSensorData] = useState([])
-  const [initialBreaches, setInitialBreaches] = useState([])
-  const [apiError, setApiError] = useState(null)
+  
+  // Centralized data fetching from all backend endpoints
+  const { 
+    inventory, 
+    metrics, 
+    complianceReport, 
+    sensorData: httpSensorData, 
+    breaches: httpBreaches,
+    loading,
+    error
+  } = useDataFetching()
+  
+  // WebSocket for real-time updates
   const { sensorData: wsSensorData, breaches: wsBreaches, isConnected } = useWebSocket('ws://localhost:8002/ws')
 
-  // Fetch initial data via HTTP
-  useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        console.log('Fetching from:', `${API_URL}/api/sensors/current`)
-        const response = await fetch(`${API_URL}/api/sensors/current`)
-        console.log('Response status:', response.status)
-        if (response.ok) {
-          const data = await response.json()
-          console.log('Data received:', data.readings?.length, 'readings')
-          setInitialSensorData(data.readings || [])
-          setApiError(null)
-        } else {
-          setApiError(`API Error: ${response.status}`)
-        }
-      } catch (error) {
-        console.error('Failed to fetch initial sensor data:', error)
-        setApiError(`Fetch Error: ${error.message}`)
-      }
-    }
-    
-    fetchInitialData()
-    // Refresh every 5 seconds as fallback
-    const interval = setInterval(fetchInitialData, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // Combine WebSocket and HTTP data
-  const sensorData = wsSensorData.length > 0 ? wsSensorData : initialSensorData
-  const breaches = wsBreaches.length > 0 ? wsBreaches : initialBreaches
+  // Combine HTTP and WebSocket data (WebSocket takes priority for real-time)
+  const sensorData = wsSensorData.length > 0 ? wsSensorData : httpSensorData
+  const breaches = wsBreaches.length > 0 ? wsBreaches : httpBreaches
 
   // Update clock every second
   useEffect(() => {
@@ -119,24 +101,49 @@ function App() {
         </button>
       </nav>
 
-      {/* Debug Info */}
-      {apiError && (
-        <div style={{ background: '#ef4444', color: 'white', padding: '0.5rem 1rem', textAlign: 'center' }}>
-          ⚠️ {apiError} | Data: {sensorData.length} readings
+      {/* Loading & Error States */}
+      {loading && (
+        <div style={{ background: 'var(--neon-blue)', color: 'white', padding: '0.5rem 1rem', textAlign: 'center' }}>
+          ⏳ Loading data from backend... (WebSocket: {isConnected ? '✅' : '❌'})
         </div>
       )}
-      {!apiError && sensorData.length === 0 && (
-        <div style={{ background: '#f97316', color: 'white', padding: '0.5rem 1rem', textAlign: 'center' }}>
-          ⏳ Loading data from API... (WebSocket: {isConnected ? '✅' : '❌'})
+      {error && (
+        <div style={{ background: 'var(--neon-red)', color: 'white', padding: '0.5rem 1rem', textAlign: 'center' }}>
+          ⚠️ {error} | Sensors: {sensorData.length} | Inventory: {inventory.length}
         </div>
       )}
       
       {/* Main Content */}
       <main style={{ flex: 1, overflow: 'auto' }}>
-        {activeTab === 'dashboard' && <ControlCenter sensorData={sensorData} breaches={breaches} wsConnected={isConnected} />}
-        {activeTab === 'monitoring' && <Monitoring sensorData={sensorData} breaches={breaches} />}
-        {activeTab === 'inventory' && <Inventory />}
-        {activeTab === 'reports' && <Reports />}
+        {activeTab === 'dashboard' && (
+          <ControlCenter 
+            sensorData={sensorData} 
+            breaches={breaches} 
+            wsConnected={isConnected}
+            inventory={inventory}
+            metrics={metrics}
+          />
+        )}
+        {activeTab === 'monitoring' && (
+          <Monitoring 
+            sensorData={sensorData} 
+            breaches={breaches} 
+            inventory={inventory}
+          />
+        )}
+        {activeTab === 'inventory' && (
+          <Inventory 
+            initialInventory={inventory}
+          />
+        )}
+        {activeTab === 'reports' && (
+          <Reports 
+            complianceReport={complianceReport}
+            metrics={metrics}
+            breaches={breaches}
+            inventory={inventory}
+          />
+        )}
       </main>
     </div>
   )

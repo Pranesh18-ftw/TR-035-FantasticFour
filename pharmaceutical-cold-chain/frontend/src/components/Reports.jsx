@@ -4,10 +4,10 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 const API_URL = 'http://localhost:8002';
 
-const Reports = () => {
-  const [report, setReport] = useState(null);
-  const [metrics, setMetrics] = useState(null);
-  const [loading, setLoading] = useState(true);
+const Reports = ({ complianceReport: initialReport, metrics: initialMetrics, breaches = [], inventory = [] }) => {
+  const [report, setReport] = useState(initialReport);
+  const [metrics, setMetrics] = useState(initialMetrics);
+  const [loading, setLoading] = useState(!initialReport || !initialMetrics);
   const [error, setError] = useState(null);
   const [days, setDays] = useState(7);
 
@@ -46,6 +46,25 @@ const Reports = () => {
       setLoading(false);
     }
   }, []);
+
+  // Sync with initial data from parent
+  useEffect(() => {
+    if (initialReport) {
+      setReport(initialReport);
+      setLoading(false);
+    } else {
+      fetchReport();
+    }
+  }, [initialReport, fetchReport]);
+
+  useEffect(() => {
+    if (initialMetrics) {
+      setMetrics(initialMetrics);
+      setLoading(false);
+    } else {
+      fetchMetrics();
+    }
+  }, [initialMetrics, fetchMetrics]);
 
   useEffect(() => {
     fetchReport();

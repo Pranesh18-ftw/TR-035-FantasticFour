@@ -6,9 +6,9 @@ import AIDrugSuggestions from './AIDrugSuggestions';
 
 const API_URL = 'http://localhost:8002';
 
-const Inventory = () => {
-  const [inventory, setInventory] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Inventory = ({ initialInventory = [] }) => {
+  const [inventory, setInventory] = useState(initialInventory);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [showAISuggestions, setShowAISuggestions] = useState(false);
@@ -26,9 +26,14 @@ const Inventory = () => {
     expiry_date: ''
   });
 
+  // Sync with initialInventory from parent
   useEffect(() => {
-    fetchInventory();
-  }, []);
+    if (initialInventory && initialInventory.length > 0) {
+      setInventory(initialInventory);
+    } else {
+      fetchInventory();
+    }
+  }, [initialInventory]);
 
   const fetchInventory = async () => {
     try {
