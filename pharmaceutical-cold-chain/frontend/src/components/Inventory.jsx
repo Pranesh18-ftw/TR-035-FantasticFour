@@ -39,7 +39,14 @@ const Inventory = () => {
   const handleAddItem = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_URL}/api/inventory`, newItem);
+      // Ensure quantity is an integer
+      const itemToSend = {
+        ...newItem,
+        quantity: parseInt(newItem.quantity) || 0,
+        optimal_temp_min: parseFloat(newItem.optimal_temp_min) || 2,
+        optimal_temp_max: parseFloat(newItem.optimal_temp_max) || 8
+      };
+      await axios.post(`${API_URL}/api/inventory`, itemToSend);
       setShowAddForm(false);
       setNewItem({
         drug_name: '',
@@ -54,6 +61,7 @@ const Inventory = () => {
       fetchInventory();
     } catch (error) {
       console.error('Error adding item:', error);
+      alert('Failed to add item: ' + (error.response?.data?.error || error.message));
     }
   };
 
